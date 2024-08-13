@@ -2,4 +2,4 @@ aiogram>=3.0
 mysql-connector-python
 matplotlib
 pandas
-pytest
+pydantic
