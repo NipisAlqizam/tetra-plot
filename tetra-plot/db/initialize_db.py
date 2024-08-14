@@ -5,12 +5,16 @@ import aiomysql
 
 import config
 
+
 async def init_db(drop_first: bool = False):
-    logging.info('Initializing database')
-    conn: aiomysql.Connection = await aiomysql.connect(host='127.0.0.1', 
-                                    port=3306, user=config.MYSQL_USER, 
-                                    password=config.MYSQL_PASSWORD,
-                                    db='mew')
+    logging.info("Initializing database")
+    conn: aiomysql.Connection = await aiomysql.connect(
+        host="127.0.0.1",
+        port=3306,
+        user=config.MYSQL_USER,
+        password=config.MYSQL_PASSWORD,
+        db="mew",
+    )
     async with conn.cursor() as cur:
         if drop_first:
             logging.info("Dropping old db")
@@ -54,6 +58,6 @@ async def init_db(drop_first: bool = False):
     conn.close()
     logging.info("Done initializing database")
 
+
 if __name__ == "__main__":
     asyncio.run(init_db())
-    

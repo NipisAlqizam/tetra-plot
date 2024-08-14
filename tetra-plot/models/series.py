@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class Series(BaseModel):
     id: int
     user_id: int
