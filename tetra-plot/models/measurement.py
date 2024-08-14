@@ -9,4 +9,4 @@ class Measurement(BaseModel):
     timestamp: datetime
     x: Optional[float]
     y: float
-    comment: Optional[str]
+    comment: str
