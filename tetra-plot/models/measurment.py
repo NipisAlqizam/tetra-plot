@@ -7,6 +7,6 @@ class Measurement(BaseModel):
     id: int
     series_id: int
     timestamp: datetime
-    x: Optional[int]
-    y: int
+    x: Optional[float]
+    y: float
     comment: Optional[str]
