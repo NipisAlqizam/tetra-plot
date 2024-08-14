@@ -13,7 +13,6 @@ async def init_db(drop_first: bool = False):
         port=3306,
         user=config.MYSQL_USER,
         password=config.MYSQL_PASSWORD,
-        db="mew",
     )
     async with conn.cursor() as cur:
         if drop_first:
