@@ -4,8 +4,7 @@ import asyncio
 from typing import Awaitable, Callable, Tuple
 import aiomysql
 
-from models.series import Series
-from models.measurement import Measurement
+from models import Series, Measurement
 
 
 async def add_series(connection: aiomysql.Connection, series: Series):
