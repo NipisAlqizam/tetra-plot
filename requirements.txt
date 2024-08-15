@@ -1,5 +1,6 @@
 aiogram>=3.0
-mysql-connector-python
+aiomysql
 matplotlib
 pandas
 pydantic
+pytest
