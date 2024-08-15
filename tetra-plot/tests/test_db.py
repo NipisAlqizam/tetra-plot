@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 import pytest
 import pytest_asyncio
@@ -31,6 +32,20 @@ async def setup_module():
 def series():
     return models.Series(
         user_id=-1, title="Тестовое измерение", x_name="U, В", y_name="I, А"
+    )
+
+
+@pytest_asyncio.fixture
+async def measurement(mysql_connection, series):
+    await db.measuring.add_series(mysql_connection, series)
+    s = await db.measuring.get_series_by_user_id(mysql_connection, -1)
+    series_id = s[0].id
+    yield models.Measurement(
+        series_id=series_id,
+        measurement_time=datetime.datetime.now(),
+        x=15.3,
+        y=19,
+        comment="Тестовое измерение",
     )
 
 
@@ -67,3 +82,30 @@ async def test_get_series_by_user_id(
     await db.measuring.add_series(mysql_connection, series)
     s = await db.measuring.get_series_by_user_id(mysql_connection, -1)
     assert len(s) == 2
+
+
+@pytest.mark.asyncio
+async def test_add_measurement(
+    mysql_connection: aiomysql.Connection, measurement: models.Measurement
+):
+    await db.measuring.add_measurement(mysql_connection, measurement)
+    async with mysql_connection.cursor() as cur:
+        cur: aiomysql.Cursor
+        await cur.execute(
+            "SELECT comment FROM Measurement WHERE series_id=%s;",
+            (measurement.series_id),
+        )
+        await mysql_connection.commit()
+        r: list = await cur.fetchone()
+        assert r[0] == "Тестовое измерение"
+
+
+@pytest.mark.asyncio
+async def test_get_measurements(
+    mysql_connection: aiomysql.Connection, measurement: models.Measurement
+):
+    await db.measuring.add_measurement(mysql_connection, measurement)
+    await db.measuring.add_measurement(mysql_connection, measurement)
+    m = await db.measuring.get_measurements(mysql_connection, measurement.series_id)
+    assert len(m) == 2
+    assert m[0].comment == measurement.comment

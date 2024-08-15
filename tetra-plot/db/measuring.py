@@ -22,12 +22,12 @@ async def add_series(connection: aiomysql.Connection, series: Series):
 async def add_measurement(connection: aiomysql.Connection, measurement: Measurement):
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
-        sql = "INSERT INTO Measurement(series_id, timestamp, x, y, comment) VALUES (%s, %s, %s, %s, %s)"
+        sql = "INSERT INTO Measurement(series_id, measurement_time, x, y, comment) VALUES (%s, %s, %s, %s, %s)"
         await cur.execute(
             sql,
             (
                 measurement.series_id,
-                measurement.timestamp,
+                measurement.measurement_time,
                 measurement.x,
                 measurement.y,
                 measurement.comment,
@@ -73,7 +73,7 @@ async def get_series_by_user_id(
 async def get_measurements(
     connection: aiomysql.Connection, series_id: int
 ) -> list[Measurement]:
-    sql = "SELECT id, series_id, timestamp, x, y, comment FROM Measurement WHERE series_id=%s;"
+    sql = "SELECT id, series_id, measurement_time, x, y, comment FROM Measurement WHERE series_id=%s;"
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
         await cur.execute(sql, (series_id))
@@ -85,7 +85,7 @@ async def get_measurements(
             current_measurement = Measurement(
                 id=row[0],
                 series_id=row[1],
-                timestamp=row[2],
+                measurement_time=row[2],
                 x=row[3],
                 y=row[4],
                 comment=row[5],
