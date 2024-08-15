@@ -5,9 +5,9 @@ from pydantic import BaseModel
 
 
 class Measurement(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     series_id: int
     timestamp: datetime
-    x: Optional[float]
+    x: Optional[float] = None
     y: float
     comment: str

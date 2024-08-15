@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class Series(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     user_id: int
     title: str
     x_name: str = "Время"
