@@ -1,7 +1,5 @@
 import logging
 
-import asyncio
-from typing import Awaitable, Callable, Tuple
 import aiomysql
 
 from models import Series, Measurement
