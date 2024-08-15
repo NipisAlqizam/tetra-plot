@@ -5,12 +5,12 @@ from aiogram import Bot, Dispatcher
 
 import config
 from handlers import default
-from db import initialize_db
+import db
 
 
 async def main():
     if config.INIT_DB:
-        await initialize_db.init_db(config.DROP_DB_BEFORE_INIT)
+        await db.init_db(config.DROP_DB_BEFORE_INIT)
     bot = Bot(token=config.BOT_TOKEN)
     dp = Dispatcher()
 
