@@ -10,11 +10,14 @@ router = Router()
 @router.message(F.text, StateFilter(None), Command("start"))
 async def start(message: Message):
     content = as_list(
-        as_marked_section(Bold("Что сделано:"), "Работа с базой данных"),
         as_marked_section(
-            Bold("Что планируется:"),
+            Bold("Что сделано:"),
+            "Работа с базой данных",
             "Создание серий",
             "Ввод данных",
+        ),
+        as_marked_section(
+            Bold("Что планируется:"),
             "Отображение списка измерений",
             "Редактирование",
             "Экспорт",
