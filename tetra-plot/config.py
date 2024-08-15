@@ -2,7 +2,7 @@ import os
 
 BOT_TOKEN: str = os.getenv("BOT_TOKEN")
 
-MYSQL_HOST: str = os.getenv("MYSQL_HOST", "localhost")
+MYSQL_HOST: str = os.getenv("MYSQL_HOST", "127.0.0.1")
 MYSQL_PORT: int = int(os.getenv("MYSQL_PORT", "3306"))
 MYSQL_USER: str = os.getenv("MYSQL_USER", "root")
 MYSQL_PASSWORD: str = os.getenv("MYSQL_PASSWORD")

@@ -6,14 +6,26 @@ import aiomysql
 import config
 
 
-async def init_db(drop_first: bool = False):
-    logging.info("Initializing database")
-    conn: aiomysql.Connection = await aiomysql.connect(
-        host="127.0.0.1",
-        port=3306,
+async def get_mysql_connection(db: str | None = None) -> aiomysql.Connection:
+    if db is not None:
+        return await aiomysql.connect(
+            host=config.MYSQL_HOST,
+            port=config.MYSQL_PORT,
+            user=config.MYSQL_USER,
+            password=config.MYSQL_PASSWORD,
+            db=db,
+        )
+    return await aiomysql.connect(
+        host=config.MYSQL_HOST,
+        port=config.MYSQL_PORT,
         user=config.MYSQL_USER,
         password=config.MYSQL_PASSWORD,
     )
+
+
+async def init_db(drop_first: bool = False):
+    logging.info("Initializing database")
+    conn = await get_mysql_connection()
     async with conn.cursor() as cur:
         if drop_first:
             logging.info("Dropping old db")
