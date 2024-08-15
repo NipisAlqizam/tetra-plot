@@ -57,3 +57,13 @@ async def test_get_series(mysql_connection: aiomysql.Connection, series: models.
         res_id = row[0]
     s = await db.measuring.get_series(mysql_connection, res_id)
     assert s.title == series.title
+
+
+@pytest.mark.asyncio
+async def test_get_series_by_user_id(
+    mysql_connection: aiomysql.Connection, series: models.Series
+):
+    await db.measuring.add_series(mysql_connection, series)
+    await db.measuring.add_series(mysql_connection, series)
+    s = await db.measuring.get_series_by_user_id(mysql_connection, -1)
+    assert len(s) == 2

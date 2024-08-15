@@ -41,13 +41,32 @@ async def get_series(connection: aiomysql.Connection, series_id: int) -> Series:
 
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
-        cur.execute(sql, (series_id))
-        connection.commit()
+        await cur.execute(sql, (series_id))
+        await connection.commit()
 
-        row = cur.fetchone()
+        row: list = await cur.fetchone()
         series = Series(
             id=row[0], user_id=row[1], title=row[2], x_name=row[3], y_name=row[4]
         )
+    return series
+
+
+async def get_series_by_user_id(
+    connection: aiomysql.Connection, user_id: int
+) -> list[Series]:
+    sql = "SELECT id, user_id, title, x_name, y_name FROM Series WHERE user_id=%s;"
+    async with connection.cursor() as cur:
+        cur: aiomysql.Cursor
+        await cur.execute(sql, (user_id))
+        await connection.commit()
+
+        res: list[list] = await cur.fetchall()
+        series = []
+        for row in res:
+            current_series = Series(
+                id=row[0], user_id=row[1], title=row[2], x_name=row[3], y_name=row[4]
+            )
+            series.append(current_series)
     return series
 
 
@@ -57,10 +76,10 @@ async def get_measurements(
     sql = "SELECT id, series_id, timestamp, x, y, comment FROM Measurement WHERE series_id=%s;"
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
-        cur.execute(sql, (series_id))
-        connection.commit()
+        await cur.execute(sql, (series_id))
+        await connection.commit()
 
-        res = cur.fetchall()
+        res: list[list] = await cur.fetchall()
         measurements = []
         for row in res:
             current_measurement = Measurement(
