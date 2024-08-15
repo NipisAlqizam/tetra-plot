@@ -51,7 +51,8 @@ async def measurement(mysql_connection, series):
 
 @pytest.mark.asyncio
 async def test_add_series(mysql_connection: aiomysql.Connection, series: models.Series):
-    await db.measuring.add_series(mysql_connection, series)
+    series_id = await db.measuring.add_series(mysql_connection, series)
+    assert isinstance(series_id, int)
     async with mysql_connection.cursor() as cur:
         cur: aiomysql.Cursor
         await cur.execute("SELECT title FROM Series WHERE user_id=-1;")

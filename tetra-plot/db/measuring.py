@@ -5,7 +5,14 @@ import aiomysql
 from models import Series, Measurement
 
 
-async def add_series(connection: aiomysql.Connection, series: Series):
+async def add_series(connection: aiomysql.Connection, series: Series) -> int:
+    """
+    Add series row to database
+
+    :param connection: database connection object
+    :param series: series object without id
+    :return: id of the newly created row
+    """
     logging.info(f"Adding measurement series {series} to db")
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
@@ -15,7 +22,14 @@ async def add_series(connection: aiomysql.Connection, series: Series):
         await cur.execute(
             sql, (series.user_id, series.title, series.x_name, series.y_name)
         )
+        await cur.execute(
+            "SELECT id FROM Series WHERE user_id=%s ORDER BY id DESC LIMIT 1;",
+            (series.user_id),
+        )
         await connection.commit()
+
+        row: list[int] = await cur.fetchone()
+        return row[0]
 
 
 async def add_measurement(connection: aiomysql.Connection, measurement: Measurement):
