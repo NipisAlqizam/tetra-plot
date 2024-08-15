@@ -1,8 +1,9 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
 class Series(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     title: str
     x_name: str = "Время"
