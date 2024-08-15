@@ -9,6 +9,7 @@ from states import NewSeries, AddMeasurements
 import db
 import models
 from keyboards import get_finish_keyboard
+from texts import get_measurement_adding_text
 
 router = Router()
 router.message.filter(F.text)
@@ -44,10 +45,14 @@ async def new_series_x_title(message: Message, state: FSMContext):
     await message.answer(done_text)
 
     await state.set_state(AddMeasurements.adding)
-    await message.answer(
-        f"Вводите данные через пробел в формате <{user_data['series_x_title']}> <{user_data['series_y_title']}> <комментарий (необязательно)>:\n\nСейчас введено следующее:\n<ничего>",
+    msg = await message.answer(
+        get_measurement_adding_text(
+            user_data["series_x_title"], user_data["series_y_title"]
+        ),
         reply_markup=get_finish_keyboard(),
     )
+    await state.update_data(series_msg=msg)
+    await state.update_data(measurements=[])
 
     series = models.Series(
         user_id=message.chat.id,
