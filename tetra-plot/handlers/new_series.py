@@ -13,6 +13,7 @@ from texts import get_measurement_adding_text
 
 router = Router()
 router.message.filter(F.text)
+logger = logging.getLogger(__name__)
 
 
 @router.message(StateFilter(None), Command("new"))
@@ -64,4 +65,4 @@ async def new_series_x_title(message: Message, state: FSMContext):
     await state.update_data(connection=connection)
     series_id = await db.measuring.add_series(connection, series)
     await state.update_data(series_id=series_id)
-    logging.info(f"Created new series with id {series_id}")
+    logger.info(f"Created new series with id {series_id}")

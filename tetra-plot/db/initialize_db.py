@@ -5,6 +5,8 @@ import aiomysql
 
 import config
 
+logger = logging.getLogger(__name__)
+
 
 async def get_mysql_connection(db: str | None = None) -> aiomysql.Connection:
     """
@@ -28,23 +30,23 @@ async def init_db(drop_first: bool = False):
 
     :param drop_first: if True will delete both database and tables and then create empty ones
     """
-    logging.info("Initializing database")
+    logger.info("Initializing database")
     conn = await get_mysql_connection()
     if not config.INIT_DB:
-        logging.info("INIT_DB is 0. Just closing created connection")
+        logger.info("INIT_DB is 0. Just closing created connection")
         conn.close()
         return
     async with conn.cursor() as cur:
         if drop_first:
-            logging.info("Dropping old db")
+            logger.info("Dropping old db")
             await cur.execute("DROP DATABASE `tetraplot`;")
             await conn.commit()
-        logging.info("Createing db")
+        logger.info("Createing db")
         await cur.execute("CREATE DATABASE IF NOT EXISTS tetraplot")
         await cur.execute("USE tetraplot")
         await conn.commit()
 
-        logging.info("Creating tables")
+        logger.info("Creating tables")
         await cur.execute(
             """CREATE TABLE IF NOT EXISTS Series
                 (id INT PRIMARY KEY AUTO_INCREMENT,
@@ -75,7 +77,7 @@ async def init_db(drop_first: bool = False):
         )
         await conn.commit()
     conn.close()
-    logging.info("Done initializing database")
+    logger.info("Done initializing database")
 
 
 if __name__ == "__main__":

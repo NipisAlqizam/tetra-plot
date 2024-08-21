@@ -4,6 +4,8 @@ import aiomysql
 
 from models import Series, Measurement
 
+logger = logging.getLogger(__name__)
+
 
 async def add_series(connection: aiomysql.Connection, series: Series) -> int:
     """
@@ -13,7 +15,7 @@ async def add_series(connection: aiomysql.Connection, series: Series) -> int:
     :param series: series object without id
     :return: id of the newly created row
     """
-    logging.info(f"Adding measurement series {series} to db")
+    logger.info(f"Adding measurement series {series} to db")
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
         sql = (
@@ -39,7 +41,7 @@ async def add_measurement(connection: aiomysql.Connection, measurement: Measurem
     :param connection: database connection object
     :param measurement: measurement object without id
     """
-    logging.info(f"Adding measurement {measurement} to db")
+    logger.info(f"Adding measurement {measurement} to db")
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
         sql = "INSERT INTO Measurement(series_id, measurement_time, x, y, comment) VALUES (%s, %s, %s, %s, %s)"
@@ -57,7 +59,7 @@ async def add_measurement(connection: aiomysql.Connection, measurement: Measurem
 
 
 async def get_series(connection: aiomysql.Connection, series_id: int) -> Series:
-    logging.info(f"Fetching series with id {series_id} from db")
+    logger.info(f"Fetching series with id {series_id} from db")
     sql = "SELECT id, user_id, title, x_name, y_name FROM Series WHERE id=%s;"
 
     async with connection.cursor() as cur:
@@ -75,7 +77,7 @@ async def get_series(connection: aiomysql.Connection, series_id: int) -> Series:
 async def get_series_by_user_id(
     connection: aiomysql.Connection, user_id: int
 ) -> list[Series]:
-    logging.info("Fetching list of series owned by user {user_id} from db")
+    logger.info("Fetching list of series owned by user {user_id} from db")
     sql = "SELECT id, user_id, title, x_name, y_name FROM Series WHERE user_id=%s;"
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor
@@ -95,7 +97,7 @@ async def get_series_by_user_id(
 async def get_measurements(
     connection: aiomysql.Connection, series_id: int
 ) -> list[Measurement]:
-    logging.info(f"Fetching measurments for series {series_id} from db")
+    logger.info(f"Fetching measurments for series {series_id} from db")
     sql = "SELECT id, series_id, measurement_time, x, y, comment FROM Measurement WHERE series_id=%s;"
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor

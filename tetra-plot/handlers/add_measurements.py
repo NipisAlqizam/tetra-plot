@@ -13,6 +13,7 @@ from keyboards import get_finish_keyboard
 
 router = Router()
 router.message.filter(F.text)
+logger = logging.getLogger(__name__)
 
 
 @router.message(AddMeasurements.adding)
@@ -35,14 +36,14 @@ async def add_measurement(message: Message, state: FSMContext):
     if comment is None:
         comment = ""
 
-    logging.debug(f"Received {x=}, {y=}, {comment=}")
+    logger.debug(f"Received {x=}, {y=}, {comment=}")
     if "," in x:
         x = x.replace(",", ".")
     if "," in y:
         y = y.replace(",", ".")
     x = float(x)
     y = float(y)
-    logging.info(f"Got {x=}, {y=}, {comment=}")
+    logger.info(f"Got {x=}, {y=}, {comment=}")
 
     measurement = models.Measurement(
         series_id=user_data["series_id"],
@@ -54,7 +55,7 @@ async def add_measurement(message: Message, state: FSMContext):
     await db.measuring.add_measurement(user_data["connection"], measurement)
 
     measurements: list[models.Measurement] = user_data["measurements"]
-    logging.info(user_data["measurements"])
+    logger.info(user_data["measurements"])
     measurements.append(measurement)
     series_msg: Message = user_data["series_msg"]
     await series_msg.edit_text(
