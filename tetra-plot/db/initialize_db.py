@@ -30,6 +30,10 @@ async def init_db(drop_first: bool = False):
     """
     logging.info("Initializing database")
     conn = await get_mysql_connection()
+    if not config.INIT_DB:
+        logging.info("INIT_DB is 0. Just closing created connection")
+        conn.close()
+        return
     async with conn.cursor() as cur:
         if drop_first:
             logging.info("Dropping old db")

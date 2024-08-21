@@ -25,8 +25,7 @@ async def mysql_connection():
 
 @pytest_asyncio.fixture
 async def setup_module():
-    if config.INIT_DB:
-        await db.init_db()
+    await db.init_db()
 
 
 @pytest.fixture
