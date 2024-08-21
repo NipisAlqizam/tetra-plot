@@ -6,7 +6,14 @@ import aiomysql
 import config
 
 
+# TODO: remove unnecessary if
 async def get_mysql_connection(db: str | None = None) -> aiomysql.Connection:
+    """
+    Creates and returns a connection to database
+
+    :param db: name of the database to connect to. If none is provided connects without a database
+    :return: MySQL connection object
+    """
     if db is not None:
         return await aiomysql.connect(
             host=config.MYSQL_HOST,
@@ -24,6 +31,11 @@ async def get_mysql_connection(db: str | None = None) -> aiomysql.Connection:
 
 
 async def init_db(drop_first: bool = False):
+    """
+    Creates database and tables if they're not created yet.
+
+    :param drop_first: if True will delete both database and tables and then create empty ones
+    """
     logging.info("Initializing database")
     conn = await get_mysql_connection()
     async with conn.cursor() as cur:

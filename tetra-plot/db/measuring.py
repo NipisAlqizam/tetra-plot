@@ -33,6 +33,12 @@ async def add_series(connection: aiomysql.Connection, series: Series) -> int:
 
 
 async def add_measurement(connection: aiomysql.Connection, measurement: Measurement):
+    """
+    Add measurement row to database
+
+    :param connection: database connection object
+    :param measurement: measurement object without id
+    """
     logging.info(f"Adding measurement {measurement} to db")
     async with connection.cursor() as cur:
         cur: aiomysql.Cursor

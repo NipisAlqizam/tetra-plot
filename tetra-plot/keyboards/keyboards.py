@@ -6,6 +6,7 @@ from aiogram.filters.callback_data import CallbackData
 
 
 def get_finish_keyboard() -> InlineKeyboardMarkup:
+    """Returns keyboard with finish button"""
     kb = InlineKeyboardBuilder()
     kb.add(InlineKeyboardButton(text="Закончить", callback_data="finish"))
     return kb.as_markup()
@@ -19,6 +20,14 @@ class PagesCallbackFactory(CallbackData, prefix="pages"):
 def get_pages_keyboard(
     first_num: int = 1, max_num: int | None = None
 ) -> InlineKeyboardMarkup:
+    """
+    Returns keyboard with up to 5 page numbers with specified first and maximum page number.
+
+    Displays 5 pages if doesn't reach the `max_num` page. Displays only pages up to `max_num` otherwise.
+
+    :param first_num: first displayed page
+    :param max_num: biggest possible page number
+    """
     kb = InlineKeyboardBuilder()
     if max_num:
         number_of_displayed_pages = min(5, max_num - first_num + 1)
