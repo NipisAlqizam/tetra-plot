@@ -6,7 +6,6 @@ import aiomysql
 import config
 
 
-# TODO: remove unnecessary if
 async def get_mysql_connection(db: str | None = None) -> aiomysql.Connection:
     """
     Creates and returns a connection to database
@@ -14,19 +13,12 @@ async def get_mysql_connection(db: str | None = None) -> aiomysql.Connection:
     :param db: name of the database to connect to. If none is provided connects without a database
     :return: MySQL connection object
     """
-    if db is not None:
-        return await aiomysql.connect(
-            host=config.MYSQL_HOST,
-            port=config.MYSQL_PORT,
-            user=config.MYSQL_USER,
-            password=config.MYSQL_PASSWORD,
-            db=db,
-        )
     return await aiomysql.connect(
         host=config.MYSQL_HOST,
         port=config.MYSQL_PORT,
         user=config.MYSQL_USER,
         password=config.MYSQL_PASSWORD,
+        db=db,
     )
 
 
