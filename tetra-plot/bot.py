@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 import config
 from handlers import default, new_series, add_measurements
 import db
-
+from handlers import list
 
 async def main():
     if config.INIT_DB:
@@ -14,7 +14,7 @@ async def main():
     bot = Bot(token=config.BOT_TOKEN)
     dp = Dispatcher()
 
-    dp.include_routers(default.router, new_series.router, add_measurements.router)
+    dp.include_routers(default.router, new_series.router, add_measurements.router, list.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
