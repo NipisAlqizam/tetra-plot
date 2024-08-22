@@ -7,6 +7,7 @@ import config
 from handlers import default, new_series, add_measurements
 import db
 from handlers import list
+from middlewares import db_connection
 
 
 async def main():
@@ -17,6 +18,7 @@ async def main():
     dp.include_routers(
         default.router, new_series.router, add_measurements.router, list.router
     )
+    dp.update.outer_middleware(db_connection.DbConnectionMiddleware())
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
