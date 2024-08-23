@@ -12,7 +12,7 @@ class DbConnectionMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: dict[str, Any],
     ) -> Any:
-        connection = await get_mysql_connection()
+        connection = await get_mysql_connection('tetraplot')
         data["connection"] = connection
         result = await handler(event, data)
         connection.close()
