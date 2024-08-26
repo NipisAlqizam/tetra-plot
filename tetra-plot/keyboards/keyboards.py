@@ -3,7 +3,7 @@ from typing import Optional
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters.callback_data import CallbackData
-
+from models import Series
 
 def get_finish_keyboard() -> InlineKeyboardMarkup:
     """Returns keyboard with finish button"""
@@ -13,12 +13,10 @@ def get_finish_keyboard() -> InlineKeyboardMarkup:
 
 
 class PagesCallbackFactory(CallbackData, prefix="pages"):
-    action: str
-    page_number: Optional[int] = None
+    series_id: int
 
 
-def get_pages_keyboard(
-    first_num: int = 1, max_num: int | None = None
+def get_pages_keyboard(series_list: list[Series]
 ) -> InlineKeyboardMarkup:
     """
     Returns keyboard with up to 5 page numbers with specified first and maximum page number.
@@ -29,17 +27,10 @@ def get_pages_keyboard(
     :param max_num: biggest possible page number
     """
     kb = InlineKeyboardBuilder()
-    if max_num:
-        number_of_displayed_pages = min(5, max_num - first_num + 1)
-    else:
-        number_of_displayed_pages = 5
-    for i in range(first_num, first_num + number_of_displayed_pages):
+    for i, s in enumerate(series_list, start=1):
         kb.button(
             text=str(i),
-            callback_data=PagesCallbackFactory(action="select", page_number=i),
+            callback_data=PagesCallbackFactory(series_id=s.id),
         )
-    kb.button(text="<", callback_data=PagesCallbackFactory(action="previous"))
-    kb.button(text="Отмена", callback_data=PagesCallbackFactory(action="cancel"))
-    kb.button(text=">", callback_data=PagesCallbackFactory(action="next"))
-    kb.adjust(number_of_displayed_pages, 3)
+    kb.adjust(5, repeat=True)
     return kb.as_markup()

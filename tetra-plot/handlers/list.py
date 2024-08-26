@@ -9,7 +9,7 @@ from aiomysql import Connection
 from states import NewSeries, AddMeasurements
 import db
 import models
-from keyboards import get_finish_keyboard
+from keyboards import get_pages_keyboard
 from texts import get_measurement_adding_text
 
 router = Router()
@@ -22,4 +22,7 @@ async def list(message: Message, state: FSMContext, connection: Connection):
     series_list.append(f"Выберите серию измерений: ")
     for i, series in enumerate(series_by, start=1):
         series_list.append(f"{i}. {series.title} с осями {series.x_name} и {series.y_name}")
-    await message.answer('\n'.join(series_list))
+    await message.answer('\n'.join(series_list), 
+    reply_markup = get_pages_keyboard(series_by))
+
+@dp.callback_query
