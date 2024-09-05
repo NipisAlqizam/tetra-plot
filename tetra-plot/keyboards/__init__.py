@@ -1,1 +1,1 @@
-from .keyboards import get_finish_keyboard, get_pages_keyboard
+from .keyboards import get_finish_keyboard, get_pages_keyboard, PagesCallbackFactory
