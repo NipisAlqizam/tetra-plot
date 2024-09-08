@@ -5,7 +5,6 @@ import pytest
 import pytest_asyncio
 import aiomysql
 
-import config
 import db
 import models
 

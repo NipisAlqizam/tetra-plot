@@ -1,17 +1,12 @@
-import logging
-
 from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiomysql import Connection
 
-from states import NewSeries, AddMeasurements
 import db
-import models
 from keyboards import get_pages_keyboard
 from keyboards import PagesCallbackFactory
-from texts import get_measurement_adding_text
 
 router = Router()
 router.message.filter(F.text)

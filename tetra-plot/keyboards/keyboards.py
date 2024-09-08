@@ -1,9 +1,8 @@
-from typing import Optional
-
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters.callback_data import CallbackData
 from models import Series
+
 
 def get_finish_keyboard() -> InlineKeyboardMarkup:
     """Returns keyboard with finish button"""
@@ -16,8 +15,7 @@ class PagesCallbackFactory(CallbackData, prefix="pages"):
     series_id: int
 
 
-def get_pages_keyboard(series_list: list[Series]
-) -> InlineKeyboardMarkup:
+def get_pages_keyboard(series_list: list[Series]) -> InlineKeyboardMarkup:
     """
     Returns keyboard with up to 5 page numbers with specified first and maximum page number.
 
