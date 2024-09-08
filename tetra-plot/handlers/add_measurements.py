@@ -75,6 +75,6 @@ async def finish_measurement(callback: CallbackQuery, state: FSMContext):
     series_msg: Message = user_data["series_msg"]
     await series_msg.delete_reply_markup()
 
-    user_data.clear()
+    await state.clear()
 
-    await callback.answer("Готово")
+    await callback.answer()
