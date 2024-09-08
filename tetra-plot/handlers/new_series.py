@@ -55,7 +55,7 @@ async def new_series_x_title(
         ),
         reply_markup=get_finish_keyboard(),
     )
-    await state.update_data(series_msg=msg)
+    await state.update_data(button_msg=msg)
     await state.update_data(measurements=[])
 
     series = models.Series(

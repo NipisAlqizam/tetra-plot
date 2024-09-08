@@ -33,5 +33,8 @@ async def start(message: Message):
 
 @router.message(F.text, Command("cancel"))
 async def cancel(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    if user_data.get("button_msg"):
+        await user_data["button_msg"].delete_reply_markup()
     await state.clear()
-    await message.answer("Готово")
+    await message.answer("Всё отменено")

@@ -69,11 +69,6 @@ async def add_measurement(message: Message, state: FSMContext, connection: Conne
 
 @router.callback_query(AddMeasurements.adding, F.data == "finish")
 async def finish_measurement(callback: CallbackQuery, state: FSMContext):
-    user_data = await state.get_data()
-
-    series_msg: Message = user_data["series_msg"]
-    await series_msg.delete_reply_markup()
-
+    await callback.message.delete_reply_markup()
     await state.clear()
-
     await callback.answer()
