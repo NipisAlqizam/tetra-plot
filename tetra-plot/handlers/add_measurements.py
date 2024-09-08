@@ -4,6 +4,7 @@ import re
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
+from aiomysql import Connection
 
 from states import AddMeasurements
 import db
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 @router.message(AddMeasurements.adding)
-async def add_measurement(message: Message, state: FSMContext):
+async def add_measurement(message: Message, state: FSMContext, connection: Connection):
     user_data = await state.get_data()
     match: re.Match = re.match(
         r"(\d+(?:[,.]\d+)?) (\d+(?:[,.]\d+)?)(?: (.+))?", message.text
@@ -52,7 +53,7 @@ async def add_measurement(message: Message, state: FSMContext):
         y=y,
         comment=comment,
     )
-    await db.measuring.add_measurement(user_data["connection"], measurement)
+    await db.measuring.add_measurement(connection, measurement)
 
     measurements: list[models.Measurement] = user_data["measurements"]
     logger.info(user_data["measurements"])
@@ -69,8 +70,6 @@ async def add_measurement(message: Message, state: FSMContext):
 @router.callback_query(AddMeasurements.adding, F.data == "finish")
 async def finish_measurement(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
-    connection = user_data["connection"]
-    connection.close()
 
     series_msg: Message = user_data["series_msg"]
     await series_msg.delete_reply_markup()

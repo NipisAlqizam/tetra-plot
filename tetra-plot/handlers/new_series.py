@@ -4,6 +4,7 @@ from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
+from aiomysql import Connection
 
 from states import NewSeries, AddMeasurements
 import db
@@ -39,7 +40,9 @@ async def new_series_x_title(message: Message, state: FSMContext):
 
 
 @router.message(NewSeries.choosing_y_name)
-async def new_series_x_title(message: Message, state: FSMContext):
+async def new_series_x_title(
+    message: Message, state: FSMContext, connection: Connection
+):
     await state.update_data(series_y_title=message.text)
     user_data = await state.get_data()
     done_text = f"Готово, измерения будут сохранены под названием {user_data['series_title']} с осями {user_data['series_x_title']} и {user_data['series_y_title']}"
@@ -61,8 +64,6 @@ async def new_series_x_title(message: Message, state: FSMContext):
         x_name=user_data["series_x_title"],
         y_name=user_data["series_y_title"],
     )
-    connection = await db.get_mysql_connection("tetraplot")
-    await state.update_data(connection=connection)
     series_id = await db.measuring.add_series(connection, series)
     await state.update_data(series_id=series_id)
     logger.info(f"Created new series with id {series_id}")
